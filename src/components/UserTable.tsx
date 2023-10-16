@@ -1,26 +1,6 @@
 import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
 import { User } from '../interfaces';
-
-const dummyusers = [
-  {
-    id: 1,
-    first_name: 'John',
-    last_name: 'Doe',
-    email: 'john.doe@example.com',
-    city: 'New York',
-    registered_date: '2022-01-01',
-    is_private: false,
-  },
-  {
-    id: 2,
-    first_name: 'Jane',
-    last_name: 'Doe',
-    email: 'jane.doe@example.com',
-    city: 'Los Angeles',
-    registered_date: '2022-02-01',
-    is_private: true,
-  },
-];
+import { useEffect, useState } from 'react';
 
 const columns: MRT_ColumnDef<User>[] = [
   {
@@ -30,6 +10,10 @@ const columns: MRT_ColumnDef<User>[] = [
   {
     accessorKey: 'last_name',
     header: 'Last Name',
+  },
+  {
+    accessorFn: row => `${row.first_name} ${row.last_name}`,
+    header: 'Full Name',
   },
   {
     accessorKey: 'email',
@@ -44,15 +28,23 @@ const columns: MRT_ColumnDef<User>[] = [
     header: 'Registered Date',
   },
   {
-    accessorKey: 'is_private',
+    accessorFn: row => `${row.is_private.toString()}`,
     header: 'Private',
   },
 ];
 
 export default function UserTable() {
+  const [data, setData] = useState<User[]>([]);
+
+  useEffect(() => {
+    fetch('http://localhost:3000/users')
+      .then(res => res.json())
+      .then(data => setData(data));
+  }, []);
+
   return (
     <MaterialReactTable
-      data={dummyusers}
+      data={data}
       columns={columns}
     />
   );
