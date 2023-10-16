@@ -1,9 +1,9 @@
-import UserTable from './components/UserTable';
+import { InfiniteScrollTable } from './components/UserTable';
 
 function App() {
   return (
     <>
-      <UserTable />
+      <InfiniteScrollTable />
     </>
   );
 }
