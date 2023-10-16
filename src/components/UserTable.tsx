@@ -1,5 +1,5 @@
 // React Dependencies
-import { UIEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 // 3rd Party Libraries
 import {
@@ -36,7 +36,10 @@ const columns: MRT_ColumnDef<User>[] = [
     header: 'City',
   },
   {
-    accessorKey: 'registered_date',
+    accessorFn: row => {
+      const date = new Date(row.registered_date);
+      return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    },
     header: 'Registered Date',
   },
   {
@@ -46,6 +49,8 @@ const columns: MRT_ColumnDef<User>[] = [
 ];
 
 const dataTotal = 100;
+
+const queryClient = new QueryClient();
 
 const UserTable = () => {
   const tableContainerRef = useRef<HTMLDivElement>(null);
@@ -57,9 +62,9 @@ const UserTable = () => {
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
 
   const { data, fetchNextPage, isError, isFetching } = useInfiniteQuery<User>({
-    queryKey: ['table-data'],
+    queryKey: ['table-data', columnFilters, globalFilter, sorting],
     queryFn: async ({ pageParam = 0 }) => {
-      const url = new URL(`http://localhost:3000/users`);
+      const url = new URL(`${import.meta.env.VITE_BASE_URL}/users`);
       url.searchParams.set('_page', `${pageParam}`);
       const response = await fetch(url);
       const json = await response.json();
@@ -74,10 +79,9 @@ const UserTable = () => {
 
   //called on scroll and possibly on mount to fetch more data as the user scrolls and reaches bottom of table
   const fetchMoreOnBottomReached = useCallback(
-    (containerRefElement?: HTMLDivElement | null) => {
+    (containerRefElement: HTMLDivElement | null) => {
       if (containerRefElement) {
         const { scrollHeight, scrollTop, clientHeight } = containerRefElement;
-        //once the user has scrolled within 400px of the bottom of the table, fetch more data if we can
         if (
           scrollHeight - scrollTop - clientHeight < 100 &&
           !isFetching &&
@@ -89,19 +93,15 @@ const UserTable = () => {
     },
     [fetchNextPage, isFetching, totalFetched]
   );
-  // scroll to top of table when sorting or filters change
+
   useEffect(() => {
-    //scroll to the top of the table when the sorting changes
-    if (rowVirtualizerInstanceRef.current) {
-      try {
-        rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-      } catch (error) {
-        console.log(error);
-      }
+    try {
+      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+    } catch (error) {
+      console.log(error);
     }
   }, [sorting, columnFilters, globalFilter]);
 
-  //a check on mount to see if the table is already scrolled to the bottom and immediately needs to fetch more data
   useEffect(() => {
     fetchMoreOnBottomReached(tableContainerRef.current);
   }, [fetchMoreOnBottomReached]);
@@ -110,24 +110,14 @@ const UserTable = () => {
     <MaterialReactTable
       columns={columns}
       data={flatData}
-      enablePagination={false}
       enableRowNumbers
-      enableRowVirtualization //optional, but recommended if it is likely going to be more than 100 rows
+      enablePagination={false}
+      enableRowVirtualization
       muiTableContainerProps={{
-        ref: tableContainerRef, //get access to the table container element
-        sx: { maxHeight: '600px' }, //give the table a max height
-        onScroll: (
-          event: UIEvent<HTMLDivElement> //add an event listener to the table container element
-        ) => fetchMoreOnBottomReached(event.target as HTMLDivElement),
+        ref: tableContainerRef,
+        sx: { maxHeight: '600px' },
+        onScroll: event => fetchMoreOnBottomReached(event.currentTarget),
       }}
-      muiToolbarAlertBannerProps={
-        isError
-          ? {
-              color: 'error',
-              children: 'Error loading data',
-            }
-          : undefined
-      }
       onColumnFiltersChange={setColumnFilters}
       onGlobalFilterChange={setGlobalFilter}
       onSortingChange={setSorting}
@@ -138,14 +128,9 @@ const UserTable = () => {
         showProgressBars: isFetching,
         sorting,
       }}
-      rowVirtualizerInstanceRef={rowVirtualizerInstanceRef} //get access to the virtualizer instance
-      rowVirtualizerProps={{ overscan: 4 }}
     />
   );
 };
-
-const queryClient = new QueryClient();
-queryClient.invalidateQueries('table-data');
 
 export const InfiniteScrollTable = () => (
   <QueryClientProvider client={queryClient}>
