@@ -1,6 +1,6 @@
 import { UserTable } from './components/UserTable';
 import { Header } from './components/Header';
-import { UserProvider } from './contexts/user';
+import { UserProvider } from './providers/UserProvider';
 
 function App() {
   return (

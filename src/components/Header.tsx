@@ -3,7 +3,7 @@ import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 
 export function Header() {
   const { user, logIn, logOut } = useUser();
-  console.log('user', user);
+  console.log(user);
   function handleClick() {
     if (!user) {
       logIn();
@@ -29,7 +29,7 @@ export function Header() {
                 variant='h6'
                 sx={{ color: 'white' }}
               >
-                {`${user.email}`}
+                {user.email}
               </Typography>
               <Button
                 variant='outlined'
