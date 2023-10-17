@@ -5,9 +5,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   MaterialReactTable,
   MRT_Virtualizer,
-  type MRT_ColumnDef,
   MRT_ColumnFiltersState,
   MRT_SortingState,
+  type MRT_ColumnDef,
 } from 'material-react-table';
 import { QueryClient, QueryClientProvider, useInfiniteQuery } from 'react-query';
 
@@ -15,6 +15,11 @@ import { QueryClient, QueryClientProvider, useInfiniteQuery } from 'react-query'
 import { UserDataObject } from '../interfaces';
 
 const columns: MRT_ColumnDef<UserDataObject>[] = [
+  {
+    accessorKey: 'id',
+    header: '#',
+    enableColumnDragging: false,
+  },
   {
     accessorKey: 'first_name',
     header: 'First Name',
@@ -61,8 +66,8 @@ const InfiniteScrollTable = () => {
   const [globalFilter, setGlobalFilter] = useState<string>();
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
 
-  const { data, fetchNextPage, isError, isFetching } = useInfiniteQuery<UserDataObject>({
-    queryKey: ['table-data', columnFilters, globalFilter, sorting],
+  const { data, fetchNextPage, isFetching } = useInfiniteQuery<UserDataObject>({
+    queryKey: ['table-data'],
     queryFn: async ({ pageParam = 0 }) => {
       const url = new URL(`${import.meta.env.VITE_BASE_URL}/users`);
       url.searchParams.set('_page', `${pageParam}`);
@@ -106,12 +111,16 @@ const InfiniteScrollTable = () => {
     fetchMoreOnBottomReached(tableContainerRef.current);
   }, [fetchMoreOnBottomReached]);
 
+  // const [columnOrder, setColumnOrder] = useState(columns.map(c => c.header));
+  // console.log('columnOrder', columnOrder);
+
   return (
     <MaterialReactTable
       columns={columns}
-      enableColumnOrdering
       data={flatData}
-      enableRowNumbers
+      // state={{ columnOrder }}
+      enableColumnOrdering
+      // onColumnOrderChange={e => setColumnOrder(e)}
       enablePagination={false}
       enableRowVirtualization
       muiTableContainerProps={{
@@ -122,13 +131,6 @@ const InfiniteScrollTable = () => {
       onColumnFiltersChange={setColumnFilters}
       onGlobalFilterChange={setGlobalFilter}
       onSortingChange={setSorting}
-      state={{
-        columnFilters,
-        globalFilter,
-        showAlertBanner: isError,
-        showProgressBars: isFetching,
-        sorting,
-      }}
     />
   );
 };
