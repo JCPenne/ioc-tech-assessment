@@ -12,9 +12,9 @@ import {
 import { QueryClient, QueryClientProvider, useInfiniteQuery } from 'react-query';
 
 // Types
-import { User } from '../interfaces';
+import { UserDataObject } from '../interfaces';
 
-const columns: MRT_ColumnDef<User>[] = [
+const columns: MRT_ColumnDef<UserDataObject>[] = [
   {
     accessorKey: 'first_name',
     header: 'First Name',
@@ -52,7 +52,7 @@ const dataTotal = 100;
 
 const queryClient = new QueryClient();
 
-const UserTable = () => {
+const InfiniteScrollTable = () => {
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const rowVirtualizerInstanceRef =
     useRef<MRT_Virtualizer<HTMLDivElement, HTMLTableRowElement>>(null);
@@ -61,7 +61,7 @@ const UserTable = () => {
   const [globalFilter, setGlobalFilter] = useState<string>();
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
 
-  const { data, fetchNextPage, isError, isFetching } = useInfiniteQuery<User>({
+  const { data, fetchNextPage, isError, isFetching } = useInfiniteQuery<UserDataObject>({
     queryKey: ['table-data', columnFilters, globalFilter, sorting],
     queryFn: async ({ pageParam = 0 }) => {
       const url = new URL(`${import.meta.env.VITE_BASE_URL}/users`);
@@ -109,6 +109,7 @@ const UserTable = () => {
   return (
     <MaterialReactTable
       columns={columns}
+      enableColumnOrdering
       data={flatData}
       enableRowNumbers
       enablePagination={false}
@@ -132,8 +133,8 @@ const UserTable = () => {
   );
 };
 
-export const InfiniteScrollTable = () => (
+export const UserTable = () => (
   <QueryClientProvider client={queryClient}>
-    <UserTable />
+    <InfiniteScrollTable />
   </QueryClientProvider>
 );

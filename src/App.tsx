@@ -1,10 +1,13 @@
-import { InfiniteScrollTable } from './components/UserTable';
+import { UserTable } from './components/UserTable';
+import { Header } from './components/Header';
+import { UserProvider } from './contexts/user';
 
 function App() {
   return (
-    <>
-      <InfiniteScrollTable />
-    </>
+    <UserProvider>
+      <Header />
+      <UserTable />
+    </UserProvider>
   );
 }
 

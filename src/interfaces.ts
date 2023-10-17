@@ -1,4 +1,4 @@
-export interface User {
+export interface UserDataObject {
   id: number;
   first_name: string;
   last_name: string;
