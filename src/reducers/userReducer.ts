@@ -14,7 +14,7 @@ export type UserAction = {
 export function userReducer(state: User, action: UserAction) {
   switch (action.type) {
     case UserActionType.LOGIN:
-      return { ...state, user: action.payload };
+      return { ...state, user: action.payload.user };
 
     case UserActionType.LOGOUT:
       return { ...state, user: null };

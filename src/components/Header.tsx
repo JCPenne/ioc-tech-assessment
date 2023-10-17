@@ -23,6 +23,28 @@ export function Header() {
           >
             Isle Of Code
           </Typography>
+          {user && (
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <Typography
+                variant='h6'
+                sx={{ color: 'white' }}
+              >
+                {`${user.email}`}
+              </Typography>
+              <Button
+                variant='outlined'
+                color='inherit'
+              >
+                Save
+              </Button>
+              <Button
+                variant='outlined'
+                color='inherit'
+              >
+                Load
+              </Button>
+            </Box>
+          )}
           <Button
             color='inherit'
             onClick={() => handleClick()}

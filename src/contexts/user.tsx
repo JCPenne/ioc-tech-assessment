@@ -15,7 +15,7 @@ export const UserContext = createContext<UserContextType>({
 });
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const [state, dispatch] = useReducer(userReducer, { user: { email: null } } as UserState);
+  const [state, dispatch] = useReducer(userReducer, { user: undefined } as UserState);
 
   return <UserContext.Provider value={{ state, dispatch }}>{children}</UserContext.Provider>;
 };
