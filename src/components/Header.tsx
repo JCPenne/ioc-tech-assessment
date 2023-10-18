@@ -1,4 +1,4 @@
-import { useUser } from '../contexts/user';
+import { useUser } from '../hooks/useUser';
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 
 export function Header() {

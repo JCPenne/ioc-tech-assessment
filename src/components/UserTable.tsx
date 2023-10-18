@@ -48,7 +48,7 @@ const columns: MRT_ColumnDef<UserDataObject>[] = [
     header: 'Registered Date',
   },
   {
-    accessorFn: row => `${row.is_private.toString()}`,
+    accessorFn: row => row.is_private.toString(),
     header: 'Private',
   },
 ];
@@ -99,11 +99,13 @@ const InfiniteScrollTable = () => {
 
   useEffect(() => {
     try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+      if (flatData.length > 0) {
+        rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+      }
     } catch (error) {
       console.log(error);
     }
-  }, [sorting, columnFilters, globalFilter]);
+  }, [sorting, columnFilters, globalFilter, flatData]);
 
   useEffect(() => {
     fetchMoreOnBottomReached(tableContainerRef.current);
