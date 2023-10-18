@@ -64,7 +64,7 @@ const InfiniteScrollTable = () => {
   const [globalFilter, setGlobalFilter] = useState<string>();
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
 
-  const { data, fetchNextPage, isLoading, isFetching } = useInfiniteQuery<UserDataObject>({
+  const { data, fetchNextPage, isError, isFetching } = useInfiniteQuery<UserDataObject>({
     queryKey: ['table-data', columnFilters, globalFilter, sorting],
     queryFn: async ({ pageParam = 0 }) => {
       const url = new URL(`${import.meta.env.VITE_BASE_URL}/users`);
@@ -115,8 +115,6 @@ const InfiniteScrollTable = () => {
       data={flatData}
       enablePagination={false}
       enableRowVirtualization
-      manualFiltering
-      manualSorting
       muiTableContainerProps={{
         ref: tableContainerRef,
         sx: { maxHeight: '600px' },
@@ -128,7 +126,7 @@ const InfiniteScrollTable = () => {
       state={{
         columnFilters,
         globalFilter,
-        isLoading,
+        showAlertBanner: isError,
         showProgressBars: isFetching,
         sorting,
       }}
