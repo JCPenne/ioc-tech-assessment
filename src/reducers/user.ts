@@ -10,6 +10,8 @@ export type UserState = {
 
 export type UserAction = { type: 'login'; payload: User } | { type: 'logout' };
 
+
+//To Do: Utilize Loading and Error states to handle async actions or actions that could fail.
 export function userReducer(state: UserState, action: UserAction) {
   switch (action.type) {
     case 'login':

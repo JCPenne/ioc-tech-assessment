@@ -4,6 +4,7 @@ import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 export function Header() {
   const { user, logIn, logOut } = useUser();
   console.log(user);
+
   function handleClick() {
     if (!user) {
       logIn();
@@ -23,7 +24,7 @@ export function Header() {
           >
             Isle Of Code
           </Typography>
-          {user && (
+          {user !== undefined && (
             <Box sx={{ display: 'flex', gap: 2 }}>
               <Typography
                 variant='h6'
@@ -47,9 +48,9 @@ export function Header() {
           )}
           <Button
             color='inherit'
-            onClick={() => handleClick()}
+            onClick={handleClick}
           >
-            {!user ? 'Login' : 'Logout'}
+            {user === undefined ? 'Login' : 'Logout'}
           </Button>
         </Toolbar>
       </AppBar>

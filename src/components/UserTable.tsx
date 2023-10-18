@@ -52,10 +52,8 @@ const columns: MRT_ColumnDef<UserDataObject>[] = [
     header: 'Private',
   },
 ];
-
+//Hardcoded. Would want a better way to discover the total data length, json-server limitation
 const dataTotal = 100;
-
-const queryClient = new QueryClient();
 
 const InfiniteScrollTable = () => {
   const tableContainerRef = useRef<HTMLDivElement>(null);
@@ -66,8 +64,8 @@ const InfiniteScrollTable = () => {
   const [globalFilter, setGlobalFilter] = useState<string>();
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
 
-  const { data, fetchNextPage, isFetching } = useInfiniteQuery<UserDataObject>({
-    queryKey: ['table-data'],
+  const { data, fetchNextPage, isLoading, isFetching } = useInfiniteQuery<UserDataObject>({
+    queryKey: ['table-data', columnFilters, globalFilter, sorting],
     queryFn: async ({ pageParam = 0 }) => {
       const url = new URL(`${import.meta.env.VITE_BASE_URL}/users`);
       url.searchParams.set('_page', `${pageParam}`);
@@ -77,7 +75,7 @@ const InfiniteScrollTable = () => {
     },
     getNextPageParam: (_, allPages) => allPages.length + 1,
     keepPreviousData: true,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
   const flatData = useMemo(() => data?.pages.flatMap(page => page) ?? [], [data]);
   const totalFetched = flatData.length;
@@ -96,7 +94,7 @@ const InfiniteScrollTable = () => {
         }
       }
     },
-    [fetchNextPage, isFetching, totalFetched]
+    [fetchNextPage, isFetching, totalFetched, dataTotal]
   );
 
   useEffect(() => {
@@ -111,18 +109,14 @@ const InfiniteScrollTable = () => {
     fetchMoreOnBottomReached(tableContainerRef.current);
   }, [fetchMoreOnBottomReached]);
 
-  // const [columnOrder, setColumnOrder] = useState(columns.map(c => c.header));
-  // console.log('columnOrder', columnOrder);
-
   return (
     <MaterialReactTable
       columns={columns}
       data={flatData}
-      // state={{ columnOrder }}
-      enableColumnOrdering
-      // onColumnOrderChange={e => setColumnOrder(e)}
       enablePagination={false}
       enableRowVirtualization
+      manualFiltering
+      manualSorting
       muiTableContainerProps={{
         ref: tableContainerRef,
         sx: { maxHeight: '600px' },
@@ -131,9 +125,20 @@ const InfiniteScrollTable = () => {
       onColumnFiltersChange={setColumnFilters}
       onGlobalFilterChange={setGlobalFilter}
       onSortingChange={setSorting}
+      state={{
+        columnFilters,
+        globalFilter,
+        isLoading,
+        showProgressBars: isFetching,
+        sorting,
+      }}
+      rowVirtualizerInstanceRef={rowVirtualizerInstanceRef} //get access to the virtualizer instance
+      rowVirtualizerProps={{ overscan: 4 }}
     />
   );
 };
+
+const queryClient = new QueryClient();
 
 export const UserTable = () => (
   <QueryClientProvider client={queryClient}>

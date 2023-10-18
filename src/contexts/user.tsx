@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react';
 import { UserState, UserAction } from '../reducers/user';
+export type UserContext = typeof UserContext
 
 type UserContextType = {
   state: UserState;
