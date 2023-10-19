@@ -48,8 +48,10 @@ export const InfiniteScrollTable = ({ columns, endpoints }: InfiniteScrollTableP
     queryFn: async ({ pageParam = 0 }) => {
       const url = new URL(`${IOC_BACKEND}${FETCH_DATA}`);
       url.searchParams.set('_page', `${pageParam}`);
+
       const response = await fetch(url);
       const json = await response.json();
+      
       return json;
     },
     getNextPageParam: (_, allPages) => allPages.length + 1,
