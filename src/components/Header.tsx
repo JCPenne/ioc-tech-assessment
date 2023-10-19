@@ -4,7 +4,7 @@ import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 export function Header() {
   const { user, logIn, logOut, fetchColumnOrder, saveColumnOrder } = useUser();
 
-  function handleLogIn() {
+  function handleUserAuth() {
     if (!user) {
       logIn();
     }
@@ -55,7 +55,7 @@ export function Header() {
           )}
           <Button
             color='inherit'
-            onClick={handleLogIn}
+            onClick={handleUserAuth}
           >
             {user === undefined ? 'Login' : 'Logout'}
           </Button>
