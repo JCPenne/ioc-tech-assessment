@@ -3,7 +3,6 @@ import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 
 export function Header() {
   const { user, logIn, logOut } = useUser();
-  console.log(user);
 
   function handleClick() {
     if (!user) {

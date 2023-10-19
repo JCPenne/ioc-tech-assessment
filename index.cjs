@@ -2,7 +2,7 @@ const { faker } = require('@faker-js/faker');
 
 module.exports = () => {
   const data = { users: [] };
-  // Create 1000 users
+
   for (let i = 0; i < 250; i++) {
     data.users.push({
       id: i,
@@ -14,5 +14,6 @@ module.exports = () => {
       is_private: Math.random() >= 0.5,
     });
   }
+  data.count = [data.users.length];
   return data;
 };
