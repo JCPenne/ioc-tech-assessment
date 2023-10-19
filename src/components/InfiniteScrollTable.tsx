@@ -8,9 +8,11 @@ import {
   MRT_ColumnFiltersState,
   MRT_SortingState,
   type MRT_ColumnDef,
-  MRT_ColumnOrderState,
 } from 'material-react-table';
 import { useInfiniteQuery, useQuery } from 'react-query';
+
+// Hooks
+import { useUser } from '../hooks/useUser';
 
 // Constants
 import { QUERY_KEYS } from '../constants';
@@ -22,6 +24,7 @@ interface InfiniteScrollTableProps {
 }
 
 export const InfiniteScrollTable = ({ columns, endpoints }: InfiniteScrollTableProps) => {
+  const { user, setColumnOrder } = useUser();
   const [FETCH_DATA, FETCH_DATA_TOTAL] = endpoints;
 
   const tableContainerRef = useRef<HTMLDivElement>(null);
@@ -51,7 +54,7 @@ export const InfiniteScrollTable = ({ columns, endpoints }: InfiniteScrollTableP
 
       const response = await fetch(url);
       const json = await response.json();
-      
+
       return json;
     },
     getNextPageParam: (_, allPages) => allPages.length + 1,
@@ -62,7 +65,7 @@ export const InfiniteScrollTable = ({ columns, endpoints }: InfiniteScrollTableP
   const flatData = useMemo(() => data?.pages.flatMap(page => page) ?? [], [data]);
   const totalFetched = flatData.length;
 
-  const fetchMoreOnBottomReached = useCallback(
+  const fetchNextDataChunk = useCallback(
     (containerRefElement: HTMLDivElement | null) => {
       if (containerRefElement) {
         const { scrollHeight, scrollTop, clientHeight } = containerRefElement;
@@ -86,17 +89,26 @@ export const InfiniteScrollTable = ({ columns, endpoints }: InfiniteScrollTableP
     } catch (error) {
       console.log(error);
     }
-  }, [sorting, columnFilters, globalFilter, flatData]);
+  }, [sorting, columnFilters, globalFilter]);
 
   useEffect(() => {
-    fetchMoreOnBottomReached(tableContainerRef.current);
-  }, [fetchMoreOnBottomReached]);
+    fetchNextDataChunk(tableContainerRef.current);
+  }, [fetchNextDataChunk]);
 
-  //Casting this to an array of strings isn't ideal but we know we're providing an accessorKey.
-  //The table library types the accessorKey as optional, which throws TS errors due to typing.
-  const [myColumnOrder, setMyColumnOrder] = useState<MRT_ColumnOrderState>(
-    columns.map(c => c.accessorKey) as string[]
-  );
+  const generateColumnOrder = () => {
+    let columnOrder;
+
+    if (
+      user?.columnOrder &&
+      Array.isArray(user.columnOrder) &&
+      user.columnOrder.every(item => typeof item === 'string')
+    ) {
+      columnOrder = user.columnOrder;
+    } else {
+      columnOrder = columns.map(c => c.accessorKey);
+    }
+    return columnOrder as string[];
+  };
 
   return (
     <MaterialReactTable
@@ -108,7 +120,7 @@ export const InfiniteScrollTable = ({ columns, endpoints }: InfiniteScrollTableP
         showAlertBanner: isError,
         showProgressBars: isFetching,
         sorting,
-        columnOrder: myColumnOrder,
+        columnOrder: generateColumnOrder(),
       }}
       enablePagination={false}
       enableColumnOrdering
@@ -116,13 +128,13 @@ export const InfiniteScrollTable = ({ columns, endpoints }: InfiniteScrollTableP
       muiTableContainerProps={{
         ref: tableContainerRef,
         sx: { maxHeight: '600px' },
-        onScroll: event => fetchMoreOnBottomReached(event.currentTarget),
+        onScroll: event => fetchNextDataChunk(event.currentTarget),
       }}
       onColumnFiltersChange={setColumnFilters}
       onGlobalFilterChange={setGlobalFilter}
       onSortingChange={setSorting}
-      onColumnOrderChange={setMyColumnOrder}
-      rowVirtualizerInstanceRef={rowVirtualizerInstanceRef} //get access to the virtualizer instance
+      onColumnOrderChange={newColumnOrder => setColumnOrder(newColumnOrder)}
+      rowVirtualizerInstanceRef={rowVirtualizerInstanceRef}
       rowVirtualizerProps={{ overscan: 4 }}
     />
   );

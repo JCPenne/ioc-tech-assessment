@@ -2,15 +2,21 @@ import { useUser } from '../hooks/useUser';
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 
 export function Header() {
-  const { user, logIn, logOut } = useUser();
+  const { user, logIn, logOut, fetchColumnOrder, saveColumnOrder } = useUser();
 
-  function handleClick() {
+  function handleLogIn() {
     if (!user) {
       logIn();
     }
     if (user) {
       logOut();
     }
+  }
+  function handleLoad() {
+    fetchColumnOrder();
+  }
+  function handleSave() {
+    saveColumnOrder(user?.columnOrder);
   }
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -34,12 +40,14 @@ export function Header() {
               <Button
                 variant='outlined'
                 color='inherit'
+                onClick={handleSave}
               >
                 Save
               </Button>
               <Button
                 variant='outlined'
                 color='inherit'
+                onClick={handleLoad}
               >
                 Load
               </Button>
@@ -47,7 +55,7 @@ export function Header() {
           )}
           <Button
             color='inherit'
-            onClick={handleClick}
+            onClick={handleLogIn}
           >
             {user === undefined ? 'Login' : 'Logout'}
           </Button>
