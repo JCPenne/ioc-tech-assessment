@@ -7,3 +7,8 @@ export interface UserDataObject {
   registered_date: string;
   is_private: boolean;
 }
+
+export type User = {
+  email?: string;
+  columnOrder?: string[];
+};

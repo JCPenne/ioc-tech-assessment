@@ -35,20 +35,21 @@ export const InfiniteScrollTable = ({ columns, endpoints }: InfiniteScrollTableP
   const [globalFilter, setGlobalFilter] = useState<string>();
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
 
+  //We would need to check the data that's returned from both queries for JSON validity and what the structure looks like.
+  //Likely an abstracted generic data checker
   const { data: dataTotal } = useQuery({
     queryKey: [`${QUERY_KEYS.TableData}-${FETCH_DATA}`],
     queryFn: async () => {
       const response = await fetch(`${IOC_BACKEND}${FETCH_DATA_TOTAL}`);
-
       const totalDataLength = await response.json();
 
       return totalDataLength;
     },
   });
-
+  //Normally the Backend API would return metadata showing total # of pages that can be returned
   const { data, fetchNextPage, isError, isFetching } = useInfiniteQuery({
     queryKey: [`${QUERY_KEYS.TableData}`, columnFilters, globalFilter, sorting],
-    queryFn: async ({ pageParam = 0 }) => {
+    queryFn: async ({ pageParam = 1 }) => {
       const url = new URL(`${IOC_BACKEND}${FETCH_DATA}`);
       url.searchParams.set('_page', `${pageParam}`);
 
@@ -57,6 +58,7 @@ export const InfiniteScrollTable = ({ columns, endpoints }: InfiniteScrollTableP
 
       return json;
     },
+    //look into this
     getNextPageParam: (_, allPages) => allPages.length + 1,
     keepPreviousData: true,
     refetchOnWindowFocus: false,
@@ -65,6 +67,7 @@ export const InfiniteScrollTable = ({ columns, endpoints }: InfiniteScrollTableP
   const flatData = useMemo(() => data?.pages.flatMap(page => page) ?? [], [data]);
   const totalFetched = flatData.length;
 
+  //look into useCallback to remember
   const fetchNextDataChunk = useCallback(
     (containerRefElement: HTMLDivElement | null) => {
       if (containerRefElement) {
@@ -80,7 +83,7 @@ export const InfiniteScrollTable = ({ columns, endpoints }: InfiniteScrollTableP
     },
     [fetchNextPage, isFetching, totalFetched, dataTotal]
   );
-
+  //Need better error handling in this useEffect
   useEffect(() => {
     try {
       if (flatData.length > 0) {
@@ -91,6 +94,7 @@ export const InfiniteScrollTable = ({ columns, endpoints }: InfiniteScrollTableP
     }
   }, [sorting, columnFilters, globalFilter]);
 
+  //Look into this
   useEffect(() => {
     fetchNextDataChunk(tableContainerRef.current);
   }, [fetchNextDataChunk]);
@@ -101,7 +105,7 @@ export const InfiniteScrollTable = ({ columns, endpoints }: InfiniteScrollTableP
     if (
       user?.columnOrder &&
       Array.isArray(user.columnOrder) &&
-      user.columnOrder.every(item => typeof item === 'string')
+      user.columnOrder.every((item: any) => typeof item === 'string')
     ) {
       columnOrder = user.columnOrder;
     } else {
@@ -136,6 +140,7 @@ export const InfiniteScrollTable = ({ columns, endpoints }: InfiniteScrollTableP
       onColumnOrderChange={newColumnOrder => setColumnOrder(newColumnOrder)}
       rowVirtualizerInstanceRef={rowVirtualizerInstanceRef}
       rowVirtualizerProps={{ overscan: 4 }}
+      enableColumnFilters={false}
     />
   );
 };

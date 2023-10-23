@@ -5,10 +5,11 @@ export function Header() {
   const { user, logIn, logOut, fetchColumnOrder, saveColumnOrder } = useUser();
 
   function handleUserAuth() {
-    if (!user) {
+    //Need much better true/false checking on this. In real App it would be hooked to a legitimate Auth system
+    if (!user?.email) {
       logIn();
     }
-    if (user) {
+    if (user?.email) {
       logOut();
     }
   }
@@ -29,7 +30,7 @@ export function Header() {
           >
             Isle Of Code
           </Typography>
-          {user !== undefined && (
+          {user?.email !== undefined && (
             <Box sx={{ display: 'flex', gap: 2 }}>
               <Typography
                 variant='h6'
@@ -57,7 +58,7 @@ export function Header() {
             color='inherit'
             onClick={handleUserAuth}
           >
-            {user === undefined ? 'Login' : 'Logout'}
+            {user?.email === undefined ? 'Login' : 'Logout'}
           </Button>
         </Toolbar>
       </AppBar>
