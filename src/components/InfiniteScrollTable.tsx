@@ -73,7 +73,7 @@ export const InfiniteScrollTable = ({ columns, endpoints }: InfiniteScrollTableP
       if (containerRefElement) {
         const { scrollHeight, scrollTop, clientHeight } = containerRefElement;
         if (
-          scrollHeight - scrollTop - clientHeight < 100 &&
+          scrollHeight - scrollTop - clientHeight < 50 &&
           !isFetching &&
           totalFetched < dataTotal
         ) {
@@ -131,7 +131,7 @@ export const InfiniteScrollTable = ({ columns, endpoints }: InfiniteScrollTableP
       enableRowVirtualization
       muiTableContainerProps={{
         ref: tableContainerRef,
-        sx: { maxHeight: '600px' },
+        sx: { maxHeight: '800px' },
         onScroll: event => fetchNextDataChunk(event.currentTarget),
       }}
       onColumnFiltersChange={setColumnFilters}
