@@ -10,7 +10,7 @@ const queryClient = new QueryClient();
 const columns: MRT_ColumnDef<any>[] = [
   {
     accessorKey: 'id',
-    header: '#',
+    header: 'id',
     enableColumnDragging: false,
   },
   {
