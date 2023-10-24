@@ -40,6 +40,7 @@ export const InfiniteScrollTable = ({ columns, endpoints }: Props) => {
 
       return totalDataLength;
     },
+    refetchOnWindowFocus: false,
   });
 
   const { data, fetchNextPage, isError, isFetching } = useInfiniteQuery({
@@ -57,7 +58,7 @@ export const InfiniteScrollTable = ({ columns, endpoints }: Props) => {
     keepPreviousData: true,
     refetchOnWindowFocus: false,
   });
-  
+
   const flatData = useMemo(() => data?.pages.flatMap(page => page) ?? [], [data]);
   const totalFetched = flatData.length;
 
