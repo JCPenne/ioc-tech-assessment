@@ -49,7 +49,6 @@ const columns: MRT_ColumnDef<any>[] = [
   },
 ];
 
-//This would normally be a route-specific page, not App
 function App() {
   return (
     <QueryClientProvider client={queryClient}>

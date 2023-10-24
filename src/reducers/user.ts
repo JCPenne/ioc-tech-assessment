@@ -13,7 +13,6 @@ export type UserAction =
   | { type: 'saveColumnOrder'; payload?: string[] }
   | { type: 'fetchColumnOrder' };
 
-//To Do: Utilize Loading and Error states to handle async actions or actions that could fail.
 export function userReducer(state: UserState, action: UserAction): UserState {
   switch (action.type) {
     case 'login': {

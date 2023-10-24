@@ -20,12 +20,14 @@ To get started with the project, clone the repository and install the dependenci
 ### Development
 
 1. Navigate to the root directory of the project
-2. Spin up the backend and generate the randomized data
+2. Create a .env.development file
+   - Inside of this file declare a variable named `VITE_BASE_URL` and set it to the local port of your choice, e.g. `VITE_BASE_URL=http://localhost:3000`
+3. Spin up the backend and generate the randomized data
    - `json-server index.cjs`
    - You will now have access to the following endpoints:
      - `localhost:3000/users`
      - `localhost:3000/count`
-3. Spin up the front end
+4. Spin up the front end
    - `npm run dev`
 
 ## Project Structure
