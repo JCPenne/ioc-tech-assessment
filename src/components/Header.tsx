@@ -5,7 +5,6 @@ export function Header() {
   const { user, logIn, logOut, fetchColumnOrder, saveColumnOrder } = useUser();
 
   function handleUserAuth() {
-    //Need much better true/false checking on this. In real App it would be hooked to a legitimate Auth system
     if (!user?.email) {
       logIn();
     }

@@ -1,27 +1,67 @@
-# React + TypeScript + Vite
+# IOC Table Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An reusable Infinite Scroll Table component, built with Material-React-Table
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Vite
+- JSON-server
+- faker
+- React
+- Typescript
+- react-query
+- material-react-table
+- MUI
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+To get started with the project, clone the repository and install the dependencies using npm install.
 
-- Configure the top-level `parserOptions` property like this:
+### Development
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
+1. Navigate to the root directory of the project
+2. Spin up the backend and generate the randomized data
+   - `json-server index.cjs`
+   - You will now have access to the following endpoints:
+     - `localhost:3000/users`
+     - `localhost:3000/count`
+3. Spin up the front end
+   - `npm run dev`
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Project Structure
+
+The project is structured into several directories:
+
+- `src`: Contains the main application code.
+- `src/components`: Contains global components.
+- `src/contexts`: Contains React context providers.
+- `src/hooks`: Contains custom hooks.
+- `src/reducers`: Contains reducers.
+
+**Components**
+
+The main components of the application are:
+
+- `App`: The root component of the application.
+- `Header`: Displays the header of the application.
+- `InfiniteScrollTable`: Displays the table of user data with infinite scrolling.
+
+**Contexts and Hooks**
+
+The application uses the React Context API for state management. The `UserContext` provides access to the user state and dispatch function for the user reducer.
+
+The `useUser` hook is a custom hook that provides convenient access to the user state and actions.
+
+**Reducers**
+
+The application uses the `userReducer` for managing the user state. The reducer handles actions for logging in and out, setting and fetching the column order.
+
+**Dependencies**
+
+The project has several dependencies, including:
+
+- `react` and `react-dom` for building the UI.
+- `@mui/material` and `@mui/icons-material` for Material-UI components.
+- `material-react-table` for the table component.
+- `react-query` for data fetching.
+- `vite` for the build tool.

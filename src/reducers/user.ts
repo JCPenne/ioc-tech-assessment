@@ -9,7 +9,7 @@ export type UserState = {
 export type UserAction =
   | { type: 'login'; payload: User }
   | { type: 'logout' }
-  | { type: 'setColumnOrder'; payload: string[] }
+  | { type: 'setColumnOrder'; payload?: string[] }
   | { type: 'saveColumnOrder'; payload?: string[] }
   | { type: 'fetchColumnOrder' };
 

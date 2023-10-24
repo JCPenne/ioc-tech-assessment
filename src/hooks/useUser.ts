@@ -12,11 +12,11 @@ export const useUser = () => {
   const logOut = () => {
     dispatch({ type: 'logout' });
   };
-  const setColumnOrder = (newColumnOrder: MRT_Updater<MRT_ColumnOrderState>) => {
-    dispatch({ type: 'setColumnOrder', payload: newColumnOrder });
-  };
   const fetchColumnOrder = () => {
     dispatch({ type: 'fetchColumnOrder' });
+  };
+  const setColumnOrder = (newColumnOrder: MRT_Updater<MRT_ColumnOrderState>) => {
+    dispatch({ type: 'setColumnOrder', payload: newColumnOrder as string[] });
   };
   const saveColumnOrder = (userColumnState: string[] | undefined) => {
     dispatch({ type: 'saveColumnOrder', payload: userColumnState });

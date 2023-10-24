@@ -4,11 +4,10 @@ import { UserProvider } from './providers/UserProvider';
 import { MRT_ColumnDef } from 'material-react-table';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ENDPOINT } from './fetchers/config';
-import { UserDataObject } from './types';
 
 const queryClient = new QueryClient();
 
-const columns: MRT_ColumnDef<UserDataObject>[] = [
+const columns: MRT_ColumnDef<any>[] = [
   {
     accessorKey: 'id',
     header: '#',
@@ -57,8 +56,7 @@ function App() {
       <UserProvider>
         <Header />
         <InfiniteScrollTable
-          //Ask Jek about this typing, see UserTable too
-          columns={columns as MRT_ColumnDef<any>[]}
+          columns={columns}
           endpoints={[ENDPOINT.USER_DATA, ENDPOINT.USER_COUNT]}
         />
       </UserProvider>

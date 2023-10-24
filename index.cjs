@@ -1,7 +1,7 @@
 const { faker } = require('@faker-js/faker');
 
 module.exports = () => {
-  const data = { users: [] };
+  const data = { users: [], count: [] };
 
   for (let i = 0; i < 250; i++) {
     data.users.push({
@@ -14,6 +14,6 @@ module.exports = () => {
       is_private: Math.random() >= 0.5,
     });
   }
-  data.count = [data.users.length];
+  data.count.push(data.users.length);
   return data;
 };
