@@ -24,7 +24,6 @@ export function userReducer(state: UserState, action: UserAction): UserState {
         parsedUserObject = { email: action.payload.email };
         localStorage.setItem('user', JSON.stringify(parsedUserObject));
       }
-
       return { ...state, user: { email: action.payload.email } };
     }
 

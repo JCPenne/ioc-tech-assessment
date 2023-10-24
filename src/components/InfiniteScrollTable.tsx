@@ -53,10 +53,11 @@ export const InfiniteScrollTable = ({ columns, endpoints }: Props) => {
 
       return json;
     },
-    getNextPageParam: (_lastPage, allPages) => allPages.length,
+    getNextPageParam: (_lastPage, allPages) => allPages.length + 1,
     keepPreviousData: true,
     refetchOnWindowFocus: false,
   });
+  
   const flatData = useMemo(() => data?.pages.flatMap(page => page) ?? [], [data]);
   const totalFetched = flatData.length;
 
@@ -85,7 +86,6 @@ export const InfiniteScrollTable = ({ columns, endpoints }: Props) => {
       console.log(error);
     }
   }, [sorting]);
-
 
   useEffect(() => {
     fetchNextDataChunk(tableContainerRef.current);
